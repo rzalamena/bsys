@@ -1,0 +1,67 @@
+require_relative 'bsys/core.rb'
+
+pkglist = Hash.new
+Dir.foreach('pkg/') do |pkg|
+  next if pkg == '.' or pkg == '..'
+
+  npkg = Package.new(pkg)
+
+  pkglist[npkg.getname] = npkg
+
+  npkg.generate_targets
+end
+
+desc "Generate documentation about bsys"
+task :doc do
+  system('rdoc bsys/')
+end
+
+desc "Clean root directory"
+task :rootclean do
+  FileUtils::rm_rf('root/', :secure => true)
+end
+
+desc "Clean all packages"
+task :clean do
+  pkglist.each_pair do |name, pkg|
+    pkg.pkg_clean
+  end
+end
+
+desc "Fetch all packages"
+task :fetch do
+  pkglist.each_pair do |name, pkg|
+    puts "pkglist[#{name.to_s}]"
+    pkg.pkg_fetch
+  end
+end
+
+desc "Configure all packages"
+task :configure => :fetch do
+  pkglist.each_pair do |name, pkg|
+    pkg.pkg_configure
+  end
+end
+
+desc "Export all packages"
+task :export => :configure do
+  pkglist.each_pair do |name, pkg|
+    pkg.pkg_export
+  end
+end
+
+desc "Build all packages"
+task :build => :export do
+  pkglist.each_pair do |name, pkg|
+    pkg.pkg_build
+  end
+end
+
+desc "Install all packages"
+task :install => :build do
+  pkglist.each_pair do |name, pkg|
+    pkg.pkg_install
+  end
+end
+
+task :default => :install
