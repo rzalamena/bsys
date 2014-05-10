@@ -1,0 +1,7 @@
+bsys - Build System
+-------------------
+This is a free and simple build system focused on getting things done.
+
+The main objetive is to aid development of software applications, libs
+or systems without having to install them or any of the dependecies
+required to compile.
