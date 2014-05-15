@@ -101,17 +101,17 @@ class Package
     end
 
     # Set default and create targets
-    @name = pkgname[0..-5]
-    @metaname = @name
-    @version = ''
-    @fetch_url = ''
-    @configure = ''
-    @export = Hash.new
-    @build = ''
-    @install_cmd = ''
-    @install = Hash.new
-    @build_deps = []
-    @clean_deps = []
+    @name               = pkgname[0..-5]
+    @metaname           = @name
+    @version            = ''
+    @fetch_url          = ''
+    @configure          = ''
+    @export             = Hash.new
+    @build              = ''
+    @install_cmd        = ''
+    @install            = Hash.new
+    @build_deps         = []
+    @clean_deps         = []
 
     # Detect package version through string
     smatch = @name.match(/\-\d+(\.|\d+)*.*$/)
@@ -454,10 +454,10 @@ INSTALL
     end
 
     # Get values from YAML configuration file
-    @autoconfigure = true
-    @autobuild = true
-    @autoinstall = true
-    @configure_flags = ''
+    @autoconfigure      = true
+    @autobuild          = true
+    @autoinstall        = true
+    @configure_flags    = ''
     pkg.each_pair do |key, value|
       case key
       when /^autoconfigure$/i
