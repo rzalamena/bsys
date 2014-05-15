@@ -246,7 +246,10 @@ class Package
 
     FileUtils::cd(@objdir)
 
-    sysexec @build
+    unless sysexec @build
+      syserr "Failed to compile package #{@name}"
+      raise
+    end
 
     FileUtils::cd(BSYS_ROOTDIR)
   end
