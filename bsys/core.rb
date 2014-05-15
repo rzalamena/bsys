@@ -8,3 +8,12 @@
 
 require_relative 'package'
 require_relative 'util'
+
+# Constant string that points to the root directory of bsys
+BSYS_ROOTDIR=Dir::getwd
+
+# Constant that defines the path to root directory
+ROOTDIR=File::join(BSYS_ROOTDIR, 'root')
+
+# Constant that points to the download folder
+DISTFILES = File::join(BSYS_ROOTDIR, "/distfiles")

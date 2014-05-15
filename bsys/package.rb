@@ -3,9 +3,6 @@ require 'yaml'
 require_relative 'fetch'
 require_relative 'util'
 
-# Constant that defines the path to root directory
-ROOTDIR=File::join(BSYS_ROOTDIR, 'root')
-
 # Is used to determine if a var is a boolean
 def is_boolean? arg
   if arg.is_a? TrueClass or arg.is_a? FalseClass

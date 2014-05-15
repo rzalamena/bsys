@@ -1,6 +1,3 @@
-# Constant string that points to the root directory of bsys
-BSYS_ROOTDIR=Dir::getwd
-
 # :nodoc:
 
 # Text colors

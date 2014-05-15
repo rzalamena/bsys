@@ -1,8 +1,5 @@
 require_relative 'util'
 
-# Constant that points to the download folder
-DISTFILES = File::join(BSYS_ROOTDIR, "/distfiles")
-
 # Function called by curl fetch method that extract packages from
 # containers.
 #
