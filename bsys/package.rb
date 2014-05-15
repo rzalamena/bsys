@@ -461,20 +461,32 @@ INSTALL
     @autoinstall = true
     @configure_flags = ''
     pkg.each_pair do |key, value|
-      @autoconfigure   = value if key == 'autoconfigure'
-      @autobuild       = value if key == 'autobuild'
-      @autoinstall     = value if key == 'autoinstall'
-
-      @fetch_url       = value if key == 'source'
-      @build_deps      = value if key == 'exportdep'
-      @clean_deps      = value if key == 'builddep'
-
-      @configure       = value if key == 'configure'
-      @configure_flags = value if key == 'configure_flags'
-      @export          = value if key == 'export'
-      @build           = value if key == 'build'
-      @install         = value if key == 'install'
-      @install_cmd     = value if key == 'install_cmd'
+      case key
+      when /^autoconfigure$/i
+        @autoconfigure          = value
+      when /^autobuild$/i
+        @autobuild              = value
+      when /^autoinstall$/i
+        @autoinstall            = value
+      when /^source$/i
+        @fetch_url              = value
+      when /^exportdep$/i
+        @build_deps             = value
+      when /^builddep$/i
+        @clean_deps             = value
+      when /^configure$/i
+        @configure              = value
+      when /^configure_flags$/i
+        @configure_flags        = value
+      when /^export$/i
+        @export                 = value
+      when /^build$/i
+        @build                  = value
+      when /^install$/i
+        @install                = value
+      when /^install_cmd$/i
+        @install_cmd            = value
+      end
     end
 
     unless @fetch_url.match(/:\/\//)
