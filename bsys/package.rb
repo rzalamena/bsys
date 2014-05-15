@@ -364,7 +364,12 @@ CONFIGURE
   end
 
   # Returns the default package build instructions
-  def pkg_default_build(jobnum=1)
+  def pkg_default_build(jobnum=0)
+    # If job number specification is missing, use default
+    if jobnum == 0
+      jobnum = $bsyscfg.get_jobs
+    end
+
     <<BUILD
 make -j#{jobnum}
 BUILD
