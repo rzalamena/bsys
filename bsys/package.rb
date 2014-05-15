@@ -45,13 +45,10 @@ end
 #  configure_flags: |
 #    --enable-bla --feature="bla"
 #  export:
-#   -
-#    ${SRCDIR}/headers/bla.h : ${ROOTDIR}/usr/include/bla.h
+#    ${SRCDIR}/headers/bla.h : /usr/include/bla.h
 #  build: |
-#    cd ${PKGNAME}-${PKGVER};
-#    make;
+#    make build
 #  install:
-#   -
 #    ${SRCDIR}/foo/daemon_config : /etc/daemon_config
 #    ${OBJDIR}/foo/daemon : /sbin/daemon
 #  install_cmd: |
@@ -226,10 +223,19 @@ class Package
     sysprint "#{@name} export"
 
     @export.each_pair do |src, dst|
-      if File::executable? src or File::directory? dst
-        FileUtils::install(src, dst, :mode => 755)
+      dst = File::join(ROOTDIR, dst)
+      if File::directory? src
+        FileUtils::mkdir_p dst
+        continue
+      end
+
+      # Create directory if it doesn't exists
+      FileUtils::mkdir_p dst[0..-(File::basename(dst).length + 1)]
+
+      if File::executable? src
+        FileUtils::install(src, dst, :mode => 0755)
       else
-        FileUtils::install(src, dst, :mode => 644)
+        FileUtils::install(src, dst, :mode => 0644)
       end
     end
   end
@@ -262,10 +268,19 @@ class Package
     end
 
     @install.each_pair do |src, dst|
-      if File::executable? item or File::directory? item
-        FileUtils::install(src, ROOT + dst, :mode => 755)
+      dst = File::join(ROOTDIR, dst)
+      if File::directory? src
+        FileUtils::mkdir_p dst
+        continue
+      end
+
+      # Create directory if it doesn't exists
+      FileUtils::mkdir_p dst[0..-(File::basename(dst).length + 1)]
+
+      if File::executable? src
+        FileUtils::install(src, dst, :mode => 0755)
       else
-        FileUtils::install(src, ROOT + dst, :mode => 644)
+        FileUtils::install(src, dst, :mode => 0644)
       end
     end
   end
