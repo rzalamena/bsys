@@ -409,8 +409,6 @@ INSTALL
   end
 
   def validate_types
-    sysprint "Validating package #{@name}"
-
     raise "autoconfigure must be a boolean" unless
       is_boolean? @autoconfigure
     raise "autobuild must be a boolean" unless

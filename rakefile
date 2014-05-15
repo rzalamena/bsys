@@ -31,7 +31,6 @@ end
 desc "Fetch all packages"
 task :fetch do
   pkglist.each_pair do |name, pkg|
-    puts "pkglist[#{name.to_s}]"
     pkg.pkg_fetch
   end
 end
