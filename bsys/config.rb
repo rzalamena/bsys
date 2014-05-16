@@ -76,19 +76,19 @@ class Configuration
     config = YAML::load_file(File::open(file))
     config.each_pair do |key, value|
       case key
-      when /cc/i
+      when /^cc$/i
         @cc             = value
-      when /cpp/i
+      when /^cpp$/i
         @cpp            = value
-      when /c\+\+/i, /cxx/i
+      when /^c\+\+$/i, /^cxx$/i
         @cxx            = value
-      when /cflags/i
+      when /^cflags$/i
         @cflags         = value
-      when /cppflags/i
+      when /^cppflags$/i
         @cppflags       = value
-      when /cxxflags/i
+      when /^cxxflags$/i
         @cxxflags       = value
-      when /jobs/i
+      when /^jobs$/i
         @jobs           = value
       end
     end
