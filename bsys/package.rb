@@ -37,6 +37,10 @@ end
 #  autoconfigure: true|false
 #  autobuild: true|false
 #  autoinstall: true|false
+#  cflags: -g -pipe
+#  cppflags: -O2
+#  cxxflags: -O2
+#  jobs: 1
 #  configure: |
 #    ./autogen.sh
 #  configure_flags: |
@@ -88,6 +92,14 @@ end
 # install_cmd::
 #  Empty, used to specify custom install command. If +autoinstall+ is on
 #  then it will be appended the automatic install procedure.
+# cflags::
+#  Empty, used to specify package specific C flags
+# cppflags::
+#  Empty, used to specify package specific C Pre Processor flags
+# cxxflags::
+#  Empty, used to specify package specific C++ flags
+# jobs::
+#  Empty, used to specify package number of simultaneous jobs
 
 class Package
   # Initiates package constants and define package tasks.
@@ -362,21 +374,27 @@ autoreconf
 CC="#{$bsyscfg.get_cc}" \\
 CPP="#{$bsyscfg.get_cpp}" \\
 CXX="#{$bsyscfg.get_cxx}" \\
-CFLAGS="#{$bsyscfg.get_cflags}" \\
-CPPFLAGS="#{$bsyscfg.get_cppflags}" \\
-CXXFLAGS="#{$bsyscfg.get_cxxflags}" \\
+CFLAGS="#{$bsyscfg.get_cflags} #{@cflags}" \\
+CPPFLAGS="#{$bsyscfg.get_cppflags} #{@cppflags}" \\
+CXXFLAGS="#{$bsyscfg.get_cxxflags} #{@cxxflags}" \\
 ${SRCDIR}/configure #{args}
 CONFIGURE
   end
 
   # Returns the default package build instructions
-  def pkg_default_build(jobnum=0)
+  def pkg_default_build(jobnum)
     # If job number specification is missing, use default
     if jobnum == 0
       jobnum = $bsyscfg.get_jobs
     end
 
     <<BUILD
+CC="#{$bsyscfg.get_cc}" \\
+CPP="#{$bsyscfg.get_cpp}" \\
+CXX="#{$bsyscfg.get_cxx}" \\
+CFLAGS="#{$bsyscfg.get_cflags} #{@cflags}" \\
+CPPFLAGS="#{$bsyscfg.get_cppflags} #{@cppflags}" \\
+CXXFLAGS="#{$bsyscfg.get_cxxflags} #{@cxxflags}" \\
 make -j#{jobnum}
 BUILD
   end
@@ -443,6 +461,15 @@ INSTALL
       @install.is_a? Hash
     raise "install_cmd must be a string" unless
       @install_cmd.is_a? String
+
+    raise "cflags must be a string" unless
+      @cflags.is_a? String
+    raise "cppflags must be a string" unless
+      @cppflags.is_a? String
+    raise "cxxflags must be a string" unless
+      @cxxflags.is_a? String
+    raise "jobs must be an integer" unless
+      @jobs.is_a? Integer
   end
 
   def loadpkg(path)
@@ -466,6 +493,10 @@ INSTALL
     @autobuild          = true
     @autoinstall        = true
     @configure_flags    = ''
+    @cflags             = ''
+    @cppflags           = ''
+    @cxxflags           = ''
+    @jobs               = 0
     pkg.each_pair do |key, value|
       case key
       when /^autoconfigure$/i
@@ -492,6 +523,14 @@ INSTALL
         @install                = value
       when /^install_cmd$/i
         @install_cmd            = value
+      when /^cflags$/i
+        @cflags                 = value
+      when /^cppflags$/i
+        @cppflags               = value
+      when /^cxxflags$/i
+        @cxxflags               = value
+      when /^jobs$/i
+        @jobs                   = value
       end
     end
 
@@ -512,9 +551,9 @@ INSTALL
 
     if @autobuild == true
       if defined? @build
-        @build << pkg_default_build
+        @build << pkg_default_build(@jobs)
       else
-        @build = pkg_default_build
+        @build = pkg_default_build(@jobs)
       end
     end
 
