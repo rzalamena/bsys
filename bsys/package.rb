@@ -359,6 +359,12 @@ private
     <<CONFIGURE
 autoreconf
 
+CC="#{$bsyscfg.get_cc}" \\
+CPP="#{$bsyscfg.get_cpp}" \\
+CXX="#{$bsyscfg.get_cxx}" \\
+CFLAGS="#{$bsyscfg.get_cflags}" \\
+CPPFLAGS="#{$bsyscfg.get_cppflags}" \\
+CXXFLAGS="#{$bsyscfg.get_cxxflags}" \\
 ${SRCDIR}/configure #{args}
 CONFIGURE
   end
