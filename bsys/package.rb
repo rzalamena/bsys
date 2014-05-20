@@ -3,15 +3,6 @@ require 'yaml'
 require_relative 'fetch'
 require_relative 'util'
 
-# Is used to determine if a var is a boolean
-def is_boolean? arg
-  if arg.is_a? TrueClass or arg.is_a? FalseClass
-    return true
-  else
-    return false
-  end
-end
-
 # This class defines the package parsing and behavior.
 #
 # = Package definition

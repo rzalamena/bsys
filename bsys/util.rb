@@ -22,6 +22,15 @@ BC_WHITE=8
 
 # :doc:
 
+# Is used to determine if a var is a boolean
+def is_boolean? arg
+  if arg.is_a? TrueClass or arg.is_a? FalseClass
+    return true
+  else
+    return false
+  end
+end
+
 # Reset text output formating
 def resetformat
   return "\e[0m"
