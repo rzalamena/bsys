@@ -170,6 +170,8 @@ class Package
           metatask.enhance("#{dep}_build".to_sym) if has_metaname
         end
       end
+
+      update_global_task(target, target_name)
     end
   end
 
@@ -223,7 +225,7 @@ class Package
     sysprint "#{@name} export"
 
     @export.each_pair do |src, dst|
-      dst = File::join(ROOTDIR, dst)
+      dst = File::join($project_rootdir, dst)
       if File::directory? src
         FileUtils::mkdir_p dst
         continue
@@ -271,7 +273,7 @@ class Package
     end
 
     @install.each_pair do |src, dst|
-      dst = File::join(ROOTDIR, dst)
+      dst = File::join($project_rootdir, dst)
       if File::directory? src
         FileUtils::mkdir_p dst
         continue
@@ -320,6 +322,25 @@ class Package
   end
 
 private
+  def update_global_task(task, target)
+    case task
+    when /clean/i
+      Rake::Task.define_task :clean => target
+    when /update/i
+      Rake::Task.define_task :update => target
+    when /fetch/i
+      Rake::Task.define_task :fetch => target
+    when /configure/i
+      Rake::Task.define_task :configure => target
+    when /export/i
+      Rake::Task.define_task :export => target
+    when /build/i
+      Rake::Task.define_task :build => target
+    when /install/i
+      Rake::Task.define_task :install => target
+    end
+  end
+
   # Generates and returns functions to be used by new rake targets
   def pkg_default_target_func(name, target)
     case target
@@ -393,7 +414,7 @@ BUILD
   # Returns the default package installation instructions
   def pkg_default_install
     <<INSTALL
-make DESTDIR=#{ROOTDIR}/ install
+make DESTDIR=#{$project_rootdir}/ install
 INSTALL
   end
 
@@ -402,7 +423,7 @@ INSTALL
 
     str = str.gsub(/\$\{SRCDIR\}/, @srcdir)
     str = str.gsub(/\$\{OBJDIR\}/, @objdir)
-    str = str.gsub(/\$\{ROOTDIR\}/, ROOTDIR)
+    str = str.gsub(/\$\{ROOTDIR\}/, $project_rootdir)
     str = str.gsub(/\$\{PKGNAME\}/, @metaname)
     str = str.gsub(/\$\{PKGVER\}/, @version)
   end

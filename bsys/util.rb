@@ -159,3 +159,59 @@ def sysexec(cmd)
 
   result
 end
+
+# Generates an all no package configuration
+def all_no_packages
+  project = Hash.new
+
+  project['name'] = 'default'
+
+  Dir::foreach(BSYS_ROOTDIR + "/pkg/") do |pkg|
+    next if pkg == '.' or pkg == '..'
+
+    pkg = File::basename(pkg, '.yml')
+
+    project[pkg] = false
+  end
+
+  File::open(BSYS_DEFAULT_PROJECT, 'w') do |fs|
+    fs.write(project.to_yaml)
+  end
+end
+
+# Generates an all yes package configuration
+def all_yes_packages
+  project = Hash.new
+
+  project['name'] = 'default'
+
+  Dir::foreach(BSYS_ROOTDIR + "/pkg/") do |pkg|
+    next if pkg == '.' or pkg == '..'
+
+    pkg = File::basename(pkg, '.yml')
+
+    project[pkg] = true
+  end
+
+  File::open(BSYS_DEFAULT_PROJECT, 'w') do |fs|
+    fs.write(project.to_yaml)
+  end
+end
+
+# Loads a single package from file and create object
+def load_pkg(name)
+  npkg = Package.new("#{name}.yml")
+
+  $pkglist[npkg.getname] = npkg
+
+  npkg.generate_targets
+end
+
+# Loads all packages from 'pkg/' directory
+def load_all_pkg
+  Dir::foreach(BSYS_ROOTDIR + '/pkg/') do |pkg|
+    next if pkg == '.' or pkg == '..'
+
+    load_pkg(File::basename(pkg, '.yml'))
+  end
+end
