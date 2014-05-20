@@ -154,7 +154,7 @@ class Package
     %w[fetch configure export build install].each do |target|
       target_name = "#{@name}_#{target}".to_sym
       target_metaname = "#{@metaname}_#{target}".to_sym if has_metaname
-      func = pkg_default_target_func(@name, target)
+      func = pkg_default_target_func(@name.to_sym, target)
 
       task = Rake::Task.define_task(target_name, &func)
       metatask = Rake::Task.define_task(target_metaname, &func) if has_metaname
@@ -325,31 +325,31 @@ private
     case target
     when /fetch/i
       return Proc.new {
-        pkglist[name].pkg_fetch
+        $pkglist[name].pkg_fetch
       }
     when /configure/i
       return Proc.new {
-        pkglist[name].pkg_configure
+        $pkglist[name].pkg_configure
       }
     when /export/i
       return Proc.new {
-        pkglist[name].pkg_export
+        $pkglist[name].pkg_export
       }
     when /build/i
       return Proc.new {
-        pkglist[name].pkg_build
+        $pkglist[name].pkg_build
       }
     when /install/i
       return Proc.new {
-        pkglist[name].pkg_install
+        $pkglist[name].pkg_install
       }
     when /update/i
       return Proc.new {
-        pkglist[name].pkg_update
+        $pkglist[name].pkg_update
       }
     when /clean/i
       return Proc.new {
-        pkglist[name].pkg_clean
+        $pkglist[name].pkg_clean
       }
     else
       syserr "Undefined target #{target} for package #{name.to_s}"

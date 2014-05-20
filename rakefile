@@ -1,12 +1,11 @@
 require_relative 'bsys/core.rb'
 
-pkglist = Hash.new
 Dir.foreach('pkg/') do |pkg|
   next if pkg == '.' or pkg == '..'
 
   npkg = Package.new(pkg)
 
-  pkglist[npkg.getname] = npkg
+  $pkglist[npkg.getname] = npkg
 
   npkg.generate_targets
 end

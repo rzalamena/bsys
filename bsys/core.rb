@@ -23,5 +23,9 @@ BSYS_DEFAULT_CONFIG=File::join(BSYS_ROOTDIR, 'configuration.yml')
 # Constant that points to the download folder
 DISTFILES = File::join(BSYS_ROOTDIR, "/distfiles")
 
+# Global hash that contains all loaded packages
+$pkglist = Hash.new
+
+# Global singleton which contains bsys configuration
 $bsyscfg = Configuration.instance
 $bsyscfg.read_config BSYS_DEFAULT_CONFIG
