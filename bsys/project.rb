@@ -20,10 +20,12 @@ require_relative 'util'
 #  directory. It should not contain spaces or any special caracter.
 #  Basically it will only accept the following regex: [a-zA-Z0-9_].
 #
+#  By default, if not specified, it will use the name 'default'.
+#
 # == Definitions
 #
 # name::
-#  The project name
+#  The project name. Default value is 'default'.
 # pkgname<-pkgver>::
 #  A package name, it must match a filename in the folder 'pkg/' without
 #  the '.yml' extension.
@@ -31,6 +33,7 @@ require_relative 'util'
 class Project
   include Singleton
 
+  # Read project configuration file, it's done on start-up or on reload
   def read_config(file)
     unless file.is_a? String
       syserr 'Project file name must be a string'
@@ -85,6 +88,7 @@ class Project
     end
   end
 
+  # Gets project name
   def get_name
     @name
   end
