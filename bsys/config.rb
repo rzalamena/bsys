@@ -38,23 +38,6 @@ require 'yaml'
 class Configuration
   include Singleton
 
-  def validate_types
-    raise "CC configuration must be a string" unless
-      @cc.is_a? String
-    raise "CPP configuration must be a string" unless
-      @cpp.is_a? String
-    raise "C++ configuration must be a string" unless
-      @cxx.is_a? String
-    raise "CFLAGS configuration must be a string" unless
-      @cflags.is_a? String
-    raise "CPPFLAGS configuration must be a string" unless
-      @cppflags.is_a? String
-    raise "CXXFLAGS configuration must be a string" unless
-      @cxxflags.is_a? String
-    raise "JOB configuration must be an integer" unless
-      @jobs.is_a? Integer
-  end
-
   def read_config(file)
     unless file.is_a? String
       syserr 'Configuration file name must be a string'
@@ -96,31 +79,56 @@ class Configuration
     validate_types
   end
 
+  # Get C Compiler
   def get_cc
     @cc
   end
 
+  # Get C Pre Processor
   def get_cpp
     @cpp
   end
 
+  # Get C++ compiler
   def get_cxx
     @cxx
   end
 
+  # Get C compiler flags
   def get_cflags
     @cflags
   end
 
+  # Get C Pre Processor flags
   def get_cppflags
     @cppflags
   end
 
+  # Get C++ compiler flags
   def get_cxxflags
     @cxxflags
   end
 
+  # Get job number configuration
   def get_jobs
     @jobs
+  end
+
+private
+  def validate_types
+    raise "CC configuration must be a string" unless
+      @cc.is_a? String
+    raise "CPP configuration must be a string" unless
+      @cpp.is_a? String
+    raise "C++ configuration must be a string" unless
+      @cxx.is_a? String
+    raise "CFLAGS configuration must be a string" unless
+      @cflags.is_a? String
+    raise "CPPFLAGS configuration must be a string" unless
+      @cppflags.is_a? String
+    raise "CXXFLAGS configuration must be a string" unless
+      @cxxflags.is_a? String
+    raise "JOB configuration must be an integer" unless
+      @jobs.is_a? Integer
   end
 end
