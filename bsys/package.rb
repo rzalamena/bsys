@@ -151,7 +151,7 @@ class Package
   def generate_targets
     has_metaname = has_version?
 
-    %w[fetch configure export build install].each do |target|
+    %w[clean update fetch configure export build install].each do |target|
       target_name = "#{@name}_#{target}".to_sym
       target_metaname = "#{@metaname}_#{target}".to_sym if has_metaname
       func = pkg_default_target_func(@name.to_sym, target)
