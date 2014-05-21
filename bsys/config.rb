@@ -19,19 +19,19 @@ require 'yaml'
 #
 # == Definitions
 #
-# +CC+::
+# CC::
 #  The location of the C compiler that we are going to use.
-# +CPP+::
+# CPP::
 #  The location of the C Pre Processor that we are going to use.
-# +CXX+::
+# CXX::
 #  The location of the C++ compiler that we are going to use.
-# +CFLAGS+::
+# CFLAGS::
 #  The C compiler flags
-# +CPPFLAGS+::
+# CPPFLAGS::
 #  The C Pre Processor flags
-# +CXXFLAGS+::
+# CXXFLAGS::
 #  The C++ flags that we are going to use
-# +JOBS+::
+# JOBS::
 #  The concurrent number of jobs that we are going to run the
 #  compilations (the '-j#' option)
 
