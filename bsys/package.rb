@@ -171,6 +171,22 @@ class Package
         end
       end
 
+      # Add per-task dependency
+      case target
+      when /install/i
+        task.enhance(["#{@name}_build".to_sym])
+        metatask.enhance(["#{@metaname}_build".to_sym]) if has_metaname
+      when /build/i
+        task.enhance(["#{@name}_export".to_sym])
+        metatask.enhance(["#{@metaname}_export".to_sym]) if has_metaname
+      when /export/i
+        task.enhance(["#{@name}_configure".to_sym])
+        metatask.enhance(["#{@metaname}_configure".to_sym]) if has_metaname
+      when /configure/i
+        task.enhance(["#{@name}_fetch".to_sym])
+        metatask.enhance(["#{@metaname}_fetch".to_sym]) if has_metaname
+      end
+
       update_global_task(target, target_name)
     end
   end
