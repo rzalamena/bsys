@@ -114,6 +114,14 @@ class Configuration
     @jobs
   end
 
+  # Set new CFLAGS.
+  #
+  # Currently being used by class Project to load the flags for
+  # searching includes and libraries from project ROOTDIR.
+  def set_cflags cflags
+    @cflags = cflags
+  end
+
 private
   def validate_types
     raise "CC configuration must be a string" unless

@@ -47,7 +47,7 @@ class Project
         load_all_pkg
       end
 
-      $project_rootdir = File::join(ROOTDIR, @name)
+      set_project_rootdir File::join(ROOTDIR, @name)
 
       return
     end
@@ -57,6 +57,8 @@ class Project
       case key
       when /^name$/i
         @name           = value
+
+        set_project_rootdir File::join(ROOTDIR, @name)
       else
         unless is_boolean? value
           syserr "Package #{key} must have value true or false"
@@ -71,8 +73,6 @@ class Project
     end
 
     validate_types
-
-    $project_rootdir = File::join(ROOTDIR, @name)
 
     if $pkglist.count == 0
       sysprint "No packages were select by the project, selecting all"
@@ -90,6 +90,33 @@ class Project
   end
 
 private
+  def load_compiler_search_path
+    cflags = ''
+
+    # Load default include folders
+    cflags << "-I#{$project_rootdir}/usr/include"
+    cflags << "-I#{$project_rootdir}/usr/local/include"
+
+    # Load default lib folders
+    cflags << "-L#{$project_rootdir}/lib"
+    cflags << "-L#{$project_rootdir}/usr/lib"
+    cflags << "-L#{$project_rootdir}/usr/local/lib"
+
+    # Load the user configured CFLAGS
+    cflags << $bsyscfg.get_cflags
+
+    # Replay it to bsys configuration
+    $bsyscfg.set_cflags cflags
+  end
+
+  def set_project_rootdir rootdir
+    $project_rootdir = rootdir
+
+    # After setting the project root dir we set-up the path to it
+    # so the compiler can look at its includes and libs.
+    load_compiler_search_path
+  end
+
   def validate_types
     raise "Project name must be a string" unless
       @name.is_a? String
