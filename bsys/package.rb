@@ -106,6 +106,7 @@ class Package
     @version            = ''
     @fetch_url          = ''
     @configure          = ''
+    @bsdstyle           = false
     @export             = Hash.new
     @build              = ''
     @install_cmd        = ''
@@ -230,6 +231,18 @@ class Package
 
     FileUtils::mkdir_p(@objdir)
 
+    if @bsdstyle == true
+      obj_symlink = File::join(@srcdir, 'obj')
+
+      sysprint "obj_symlink=#{obj_symlink}"
+      unless File::exists? obj_symlink
+        FileUtils::ln_s(@objdir, obj_symlink)
+      end
+    end
+
+    # Don't try an empty configure command
+    return if @configure.length == 0
+
     FileUtils::cd(@objdir)
 
     unless sysexec @configure
@@ -269,7 +282,11 @@ class Package
   def pkg_build
     sysprint "#{@name} build"
 
-    FileUtils::cd(@objdir)
+    if @bsdstyle == true
+      FileUtils::cd(@srcdir)
+    else
+      FileUtils::cd(@objdir)
+    end
 
     unless sysexec @build
       syserr "Failed to compile package #{@name}"
@@ -476,6 +493,8 @@ INSTALL
       is_boolean? @autobuild
     raise "autoinstall must be a boolean" unless
       is_boolean? @autoinstall
+    raise "bsdstyle must be a boolean" unless
+      is_boolean? @bsdstyle
 
     raise "source must be a string" unless
       @fetch_url.is_a? String
@@ -546,6 +565,8 @@ INSTALL
         @build_deps             = value
       when /^builddep$/i
         @clean_deps             = value
+      when /^bsdstyle$/i
+        @bsdstyle               = value
       when /^configure$/i
         @configure              = value
       when /^configure_flags$/i
@@ -575,6 +596,10 @@ INSTALL
     end
 
     validate_types
+
+    if @bsdstyle == true
+      @autoconfigure = false
+    end
 
     if @autoconfigure == true
       if defined? @configure
