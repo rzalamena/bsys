@@ -234,7 +234,6 @@ class Package
     if @bsdstyle == true
       obj_symlink = File::join(@srcdir, 'obj')
 
-      sysprint "obj_symlink=#{obj_symlink}"
       unless File::exists? obj_symlink
         FileUtils::ln_s(@objdir, obj_symlink)
       end
@@ -303,7 +302,11 @@ class Package
     sysprint "#{@name} install"
 
     if @install[:bsys_install] != nil
-      FileUtils::cd(@objdir)
+      if @bsdstyle == true
+        FileUtils::cd(@srcdir)
+      else
+        FileUtils::cd(@objdir)
+      end
 
       sysexec(@install[:bsys_install])
 
@@ -452,9 +455,13 @@ BUILD
   end
 
   # Returns the default package installation instructions
-  def pkg_default_install
+  def pkg_default_install(bsdstyle=false)
+    if bsdstyle == true
+      sudo_cmd = 'sudo'
+    end
+
     <<INSTALL
-make DESTDIR=#{$project_rootdir}/ install
+#{sudo_cmd} make DESTDIR=#{$project_rootdir}/ install
 INSTALL
   end
 
@@ -620,9 +627,9 @@ INSTALL
     if @autoinstall == true
       if @install_cmd.length > 0
         @install[:bsys_install] = @install_cmd
-        @install[:bsys_install] << pkg_default_install
+        @install[:bsys_install] << pkg_default_install(@bsdstyle)
       else
-        @install[:bsys_install] = pkg_default_install
+        @install[:bsys_install] = pkg_default_install(@bsdstyle)
       end
     end
 
