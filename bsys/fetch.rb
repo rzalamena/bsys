@@ -76,27 +76,28 @@ end
 
 # Clone a git repository
 def git_clone(url, target)
-  cmd = "git clone ${url} #{target}"
+  cmd = "git clone #{url} #{target}"
 
-  protocol = ''
+  protocol = 'git'
   protocols = url.split(':')[0]
-  unless protocols.match(/\+/)
-    raise 'Invalid URL protocol format #{protocols}'
-  end
-
   protocols.split('+').each do |proto|
     next if proto == 'git'
     protocol = proto
   end
 
-  raise 'Empty protocol' if protocol.length == 0
+  if protocol.length == 0
+    syserr 'Empty protocol'
+    raise
+  end
+
   case protocol
   when /http/i, /ftp/i, /https/i, /ssh/i
   else
-    raise "Unsupported protocol #{protocol}"
+    syserr "Unsupported protocol #{protocol}"
+    raise
   end
 
-  if sysexec(cmd)
+  unless sysexec(cmd)
     syserr 'git failed'
     raise
   end

@@ -197,6 +197,13 @@ class Package
 
     sysprint "#{@name} fetch: #{@fetch_url}"
 
+    # Try to guess by package URL extension
+    if @fetch_url.match(/\.git$/i)
+      git_clone(@fetch_url, @srcdir)
+      return
+    end
+
+    # Else use the URL to select fetch method
     protocol = @fetch_url.split(':')[0]
 
     if protocol.length == 0
