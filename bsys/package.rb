@@ -597,11 +597,6 @@ INSTALL
       end
     end
 
-    unless @fetch_url.match(/:\/\//)
-      syserr "Invalid package source URL: #{@fetch_url}: expected TYPE://URL"
-      raise
-    end
-
     validate_types
 
     if @bsdstyle == true

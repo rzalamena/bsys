@@ -91,7 +91,7 @@ def git_clone(url, target)
   end
 
   case protocol
-  when /http/i, /ftp/i, /https/i, /ssh/i
+  when /http/i, /ftp/i, /https/i, /ssh/i, /git/i
   else
     syserr "Unsupported protocol #{protocol}"
     raise
