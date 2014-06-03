@@ -103,15 +103,15 @@ def colorize(fcode, bcode=0)
 end
 
 # Prints messages with specified format
-# +msg+::
+# msg::
 #  The message that we want to get printed
-# +tc+::
+# tc::
 #  The message text color
-# +bc+::
+# bc::
 #  The message text background color
-# +bold+::
+# bold::
 #  Whether we want the text bold or not
-# +underline+::
+# underline::
 #  Whether we want the text underlined or not
 def sysout(msg, tc=0, bc=0, bold=0, underline=0)
   if tc != 0 or bc != 0

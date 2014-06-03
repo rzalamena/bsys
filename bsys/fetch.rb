@@ -49,9 +49,9 @@ def package_extract(file, target)
 end
 
 # Downloads package from URL using:
-# +url+:: The download source in the format 'type://URI/path'
-# +target+:: The download destination
-# +param+:: Aditional parameters for cURL
+# url:: The download source in the format 'type://URI/path'
+# target:: The download destination
+# param:: Aditional parameters for cURL
 def curl_fetch(url, target, param='')
   file_dist = File::join(DISTFILES, File::basename(url))
 
