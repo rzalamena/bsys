@@ -193,6 +193,10 @@ class Package
 
       update_global_task(target, target_name)
     end
+
+    # Create the default package task named after the package name
+    task = Rake::Task.define_task("#{@name}" => ["#{@name}_install".to_sym])
+    metatask = Rake::Task.define_task("#{@metaname}" => ["#{@metaname}_install".to_sym]) if has_metaname
   end
 
   # Method called when the target :<pkgname>_fetch is reached
