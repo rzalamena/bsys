@@ -25,6 +25,7 @@ require_relative 'util'
 #   - bla
 #  exportdep:
 #   - bla
+#  bsdstyle: true|false
 #  autoconfigure: true|false
 #  autobuild: true|false
 #  autoinstall: true|false
@@ -91,6 +92,8 @@ require_relative 'util'
 #  Empty, used to specify package specific C++ flags
 # jobs::
 #  Empty, used to specify package number of simultaneous jobs
+# bsdstyle::
+#  False, the default method is using autoconfiguration.
 
 class Package
   # Initiates package constants and define package tasks.

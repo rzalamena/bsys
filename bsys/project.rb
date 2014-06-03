@@ -13,6 +13,9 @@ require_relative 'util'
 #  name: projectname
 #  libevent-2.0.21-stable: true
 #
+# The project file may be generated automatically by using the 'all_no'
+# or 'all_yes' rake targets.
+#
 # == Mandatory fields
 #
 # name::

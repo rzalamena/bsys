@@ -38,6 +38,8 @@ require 'yaml'
 class Configuration
   include Singleton
 
+  # Loads configuration from file 'configuration.yml'. By default this
+  # file is non-existent and it should be created by the user.
   def read_config(file)
     unless file.is_a? String
       syserr 'Configuration file name must be a string'
