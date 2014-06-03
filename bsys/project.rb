@@ -116,6 +116,9 @@ private
   def set_project_rootdir rootdir
     $project_rootdir = rootdir
 
+    # Creates the default directory hierarchy
+    create_rootdir
+
     # After setting the project root dir we set-up the path to it
     # so the compiler can look at its includes and libs.
     load_compiler_search_path

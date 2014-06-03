@@ -215,3 +215,23 @@ def load_all_pkg
     load_pkg(File::basename(pkg, '.yml'))
   end
 end
+
+# Creates the default directories for the root folder
+def create_rootdir
+  return if File::exists? $project_rootdir
+
+  rootdirs_list = File::join(BSYS_ROOTDIR, 'bsys/rootdirs.lst')
+
+  f = File::open(rootdirs_list)
+  unless f
+    syserr "Failed to load root directory schematics list: #{rootdirs_list}"
+    raise
+  end
+
+  f.each_line do |directory|
+    # Remove formaters
+    directory = directory.gsub(/(\r|\n)*/, '')
+
+    FileUtils::mkdir_p(File::join $project_rootdir, directory)
+  end
+end
