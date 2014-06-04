@@ -32,6 +32,7 @@ require_relative 'util'
 #  cflags: -g -pipe
 #  cppflags: -O2
 #  cxxflags: -O2
+#  make: /usr/bin/pmake
 #  jobs: 1
 #  configure: |
 #    ./autogen.sh
@@ -84,6 +85,8 @@ require_relative 'util'
 # install_cmd::
 #  Empty, used to specify custom install command. If +autoinstall+ is on
 #  then it will be appended the automatic install procedure.
+# make::
+#  Empty, used to specify package specific Make program
 # cflags::
 #  Empty, used to specify package specific C flags
 # cppflags::
@@ -116,6 +119,15 @@ class Package
     @install            = Hash.new
     @build_deps         = []
     @clean_deps         = []
+    @autoconfigure      = true
+    @autobuild          = true
+    @autoinstall        = true
+    @configure_flags    = ''
+    @make               = ''
+    @cflags             = ''
+    @cppflags           = ''
+    @cxxflags           = ''
+    @jobs               = 0
 
     # Detect package version through string
     smatch = @name.match(/\-\d+(\.|\d+)*.*$/)
@@ -444,10 +456,13 @@ CONFIGURE
   end
 
   # Returns the default package build instructions
-  def pkg_default_build(jobnum)
+  def pkg_default_build(jobnum, make)
     # If job number specification is missing, use default
     if jobnum == 0
       jobnum = $bsyscfg.get_jobs
+    end
+    if make.length == 0
+      make = $bsyscfg.get_make
     end
 
     <<BUILD
@@ -457,18 +472,21 @@ CXX="#{$bsyscfg.get_cxx}" \\
 CFLAGS="#{$bsyscfg.get_cflags} #{@cflags}" \\
 CPPFLAGS="#{$bsyscfg.get_cppflags} #{@cppflags}" \\
 CXXFLAGS="#{$bsyscfg.get_cxxflags} #{@cxxflags}" \\
-make -j#{jobnum}
+#{make} -j#{jobnum}
 BUILD
   end
 
   # Returns the default package installation instructions
-  def pkg_default_install(bsdstyle=false)
+  def pkg_default_install(bsdstyle=false, make)
     if bsdstyle == true
       sudo_cmd = 'sudo'
     end
+    if make.length == 0
+      make = $bsyscfg.get_make
+    end
 
     <<INSTALL
-#{sudo_cmd} make DESTDIR=#{$project_rootdir}/ install
+#{sudo_cmd} #{make} DESTDIR=#{$project_rootdir}/ install
 INSTALL
   end
 
@@ -530,6 +548,8 @@ INSTALL
     raise "install_cmd must be a string" unless
       @install_cmd.is_a? String
 
+    raise "make must be a string" unless
+      @make.is_a? String
     raise "cflags must be a string" unless
       @cflags.is_a? String
     raise "cppflags must be a string" unless
@@ -557,14 +577,6 @@ INSTALL
     end
 
     # Get values from YAML configuration file
-    @autoconfigure      = true
-    @autobuild          = true
-    @autoinstall        = true
-    @configure_flags    = ''
-    @cflags             = ''
-    @cppflags           = ''
-    @cxxflags           = ''
-    @jobs               = 0
     pkg.each_pair do |key, value|
       case key
       when /^autoconfigure$/i
@@ -593,6 +605,8 @@ INSTALL
         @install                = value
       when /^install_cmd$/i
         @install_cmd            = value
+      when /^make$/i
+        @make                   = value
       when /^cflags$/i
         @cflags                 = value
       when /^cppflags$/i
@@ -620,18 +634,18 @@ INSTALL
 
     if @autobuild == true
       if defined? @build
-        @build << pkg_default_build(@jobs)
+        @build << pkg_default_build(@jobs, @make)
       else
-        @build = pkg_default_build(@jobs)
+        @build = pkg_default_build(@jobs, @make)
       end
     end
 
     if @autoinstall == true
       if @install_cmd.length > 0
         @install[:bsys_install] = @install_cmd
-        @install[:bsys_install] << pkg_default_install(@bsdstyle)
+        @install[:bsys_install] << pkg_default_install(@bsdstyle, @make)
       else
-        @install[:bsys_install] = pkg_default_install(@bsdstyle)
+        @install[:bsys_install] = pkg_default_install(@bsdstyle, @make)
       end
     end
 

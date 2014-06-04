@@ -7,6 +7,7 @@ require 'yaml'
 #
 # Here is an example of all possibles configuration that we can make:
 #
+#  MAKE: /usr/bin/make
 #  CC: /usr/bin/cc
 #  CPP: /usr/bin/cpp
 #  CXX: /usr/bin/c++
@@ -19,6 +20,8 @@ require 'yaml'
 #
 # == Definitions
 #
+# MAKE::
+#  The location of the Make program that we are going to use.
 # CC::
 #  The location of the C compiler that we are going to use.
 # CPP::
@@ -54,6 +57,7 @@ class Configuration
     @cflags     = ''
     @cppflags   = ''
     @cxxflags   = ''
+    @make       = 'make'
 
     # Exit if file doesn't exists
     return unless File::exists? file
@@ -61,6 +65,8 @@ class Configuration
     config = YAML::load_file(File::open(file))
     config.each_pair do |key, value|
       case key
+      when /^make$/i
+        @make           = value
       when /^cc$/i
         @cc             = value
       when /^cpp$/i
@@ -79,6 +85,11 @@ class Configuration
     end
 
     validate_types
+  end
+
+  # Get Make program
+  def get_make
+    @make
   end
 
   # Get C Compiler
@@ -126,6 +137,8 @@ class Configuration
 
 private
   def validate_types
+    raise "MAKE configuration must be a string" unless
+      @make.is_a? String
     raise "CC configuration must be a string" unless
       @cc.is_a? String
     raise "CPP configuration must be a string" unless
