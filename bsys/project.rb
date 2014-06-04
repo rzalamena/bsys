@@ -49,8 +49,7 @@ class Project
     # Exit if file doesn't exists
     unless File::exists? file
       if $pkglist.count == 0
-        sysprint "No packages were select by the project, selecting all"
-        load_all_pkg
+        sysprint "No packages were select by the project"
       end
 
       set_project_rootdir File::join(ROOTDIR, @name)
@@ -81,8 +80,7 @@ class Project
     validate_types
 
     if $pkglist.count == 0
-      sysprint "No packages were select by the project, selecting all"
-      load_all_pkg
+      sysprint "No packages were select by the project"
     end
 
     if @name.match(/[^a-zA-Z0-9_]/)
