@@ -1,2 +1,4 @@
 source: 'https://github.com/rzalamena/tmux.git'
 bsdstyle: true
+builddep:
+ - libevent

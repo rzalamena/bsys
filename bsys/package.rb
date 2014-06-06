@@ -175,18 +175,6 @@ class Package
       task = Rake::Task.define_task(target_name, &func)
       metatask = Rake::Task.define_task(target_metaname, &func) if has_metaname
 
-      # Generate package export dependencies
-      if target == 'build' and defined? @build_deps
-        @build_deps.each do |dep|
-          task.enhance("#{dep}_export".to_sym)
-          metatask.enhance("#{dep}_export".to_sym) if has_metaname
-        end
-        @clean_deps.each do |dep|
-          task.enhance("#{dep}_build".to_sym)
-          metatask.enhance("#{dep}_build".to_sym) if has_metaname
-        end
-      end
-
       # Add per-task dependency
       case target
       when /install/i
@@ -195,12 +183,30 @@ class Package
       when /build/i
         task.enhance(["#{@name}_export".to_sym])
         metatask.enhance(["#{@metaname}_export".to_sym]) if has_metaname
+
+        # Generate package export dependencies
+        @build_deps.each do |dep|
+          task.enhance(["#{dep}_export".to_sym])
+          metatask.enhance(["#{dep}_export".to_sym]) if has_metaname
+        end
+
+        # Generate package build dependencies
+        @clean_deps.each do |dep|
+          task.enhance(["#{dep}_build".to_sym])
+          metatask.enhance(["#{dep}_build".to_sym]) if has_metaname
+        end
       when /export/i
         task.enhance(["#{@name}_configure".to_sym])
         metatask.enhance(["#{@metaname}_configure".to_sym]) if has_metaname
       when /configure/i
         task.enhance(["#{@name}_fetch".to_sym])
         metatask.enhance(["#{@metaname}_fetch".to_sym]) if has_metaname
+      when /clean/i
+        # Generate package clean dependencies
+        @clean_deps.each do |dep|
+          task.enhance(["#{dep}_clean".to_sym])
+          metatask.enhance(["#{dep}_clean".to_sym]) if has_metaname
+        end
       end
 
       update_global_task(target, target_name)
