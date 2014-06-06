@@ -6,6 +6,7 @@ require 'yaml'
 # = Configuration
 #
 # Here is an example of all possibles configuration that we can make:
+# (the configuration keywords are case insensitive)
 #
 #  MAKE: /usr/bin/make
 #  CC: /usr/bin/cc
@@ -14,6 +15,7 @@ require 'yaml'
 #  CFLAGS: -g
 #  CPPFLAGS: -g
 #  CXXFLAGS: -g
+#  LDFLAGS: -L/usr/lib
 #  JOBS: 3
 #
 # There are no mandatory configurations now.
@@ -57,6 +59,7 @@ class Configuration
     @cflags     = ''
     @cppflags   = ''
     @cxxflags   = ''
+    @ldflags    = ''
     @make       = 'make'
 
     # Exit if file doesn't exists
@@ -79,6 +82,8 @@ class Configuration
         @cppflags       = value
       when /^cxxflags$/i
         @cxxflags       = value
+      when /^ldflags$/i
+        @ldflags        = value
       when /^jobs$/i
         @jobs           = value
       end
@@ -122,6 +127,11 @@ class Configuration
     @cxxflags
   end
 
+  # Get linker flags
+  def get_ldflags
+    @ldflags
+  end
+
   # Get job number configuration
   def get_jobs
     @jobs
@@ -133,6 +143,14 @@ class Configuration
   # searching includes and libraries from project ROOTDIR.
   def set_cflags cflags
     @cflags = cflags
+  end
+
+  # Set new LDFLAGS.
+  #
+  # Currently being used by class Project to load the flags for
+  # searching includes and libraries from project ROOTDIR.
+  def set_ldflags ldflags
+    @ldflags = ldflags
   end
 
 private
@@ -151,6 +169,8 @@ private
       @cppflags.is_a? String
     raise "CXXFLAGS configuration must be a string" unless
       @cxxflags.is_a? String
+    raise "LDFLAGS configuration must be a string" unless
+      @ldflags.is_a? String
     raise "JOB configuration must be an integer" unless
       @jobs.is_a? Integer
   end

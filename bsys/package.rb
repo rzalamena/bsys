@@ -18,7 +18,7 @@ require_relative 'util'
 # == Definitions
 #
 # Here is an example of all possible options that we can configure in a
-# package:
+# package: (the keywords are case insensitive)
 #
 #  source: ""
 #  builddep:
@@ -32,6 +32,7 @@ require_relative 'util'
 #  cflags: -g -pipe
 #  cppflags: -O2
 #  cxxflags: -O2
+#  ldflags: -L/usr/lib
 #  make: /usr/bin/pmake
 #  jobs: 1
 #  configure: |
@@ -93,6 +94,8 @@ require_relative 'util'
 #  Empty, used to specify package specific C Pre Processor flags
 # cxxflags::
 #  Empty, used to specify package specific C++ flags
+# ldflags::
+#  Empty, used to specify package specific linker flags
 # jobs::
 #  Empty, used to specify package number of simultaneous jobs
 # bsdstyle::
@@ -127,6 +130,7 @@ class Package
     @cflags             = ''
     @cppflags           = ''
     @cxxflags           = ''
+    @ldflags            = ''
     @jobs               = 0
 
     # Detect package version through string
@@ -460,6 +464,7 @@ CXX="#{$bsyscfg.get_cxx}" \\
 CFLAGS="#{$bsyscfg.get_cflags} #{@cflags}" \\
 CPPFLAGS="#{$bsyscfg.get_cppflags} #{@cppflags}" \\
 CXXFLAGS="#{$bsyscfg.get_cxxflags} #{@cxxflags}" \\
+LDFLAGS="#{$bsyscfg.get_ldflags} #{@ldflags}" \\
 ${SRCDIR}/configure #{args}
 CONFIGURE
   end
@@ -481,6 +486,7 @@ CXX="#{$bsyscfg.get_cxx}" \\
 CFLAGS="#{$bsyscfg.get_cflags} #{@cflags}" \\
 CPPFLAGS="#{$bsyscfg.get_cppflags} #{@cppflags}" \\
 CXXFLAGS="#{$bsyscfg.get_cxxflags} #{@cxxflags}" \\
+LDFLAGS="#{$bsyscfg.get_ldflags} #{@ldflags}" \\
 #{make} -j#{jobnum}
 BUILD
   end
@@ -565,6 +571,8 @@ INSTALL
       @cppflags.is_a? String
     raise "cxxflags must be a string" unless
       @cxxflags.is_a? String
+    raise "ldflags must be a string" unless
+      @ldflags.is_a? String
     raise "jobs must be an integer" unless
       @jobs.is_a? Integer
   end
@@ -622,6 +630,8 @@ INSTALL
         @cppflags               = value
       when /^cxxflags$/i
         @cxxflags               = value
+      when /^ldflags$/i
+        @ldflags                = value
       when /^jobs$/i
         @jobs                   = value
       end

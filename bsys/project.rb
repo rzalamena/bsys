@@ -8,7 +8,7 @@ require_relative 'util'
 # = The project file
 #
 # Here is an example of all possibles project configuration that we can
-# make:
+# make: (the keywords are case insensitive)
 #
 #  name: projectname
 #  libevent-2.0.21-stable: true
@@ -96,22 +96,26 @@ class Project
 
 private
   def load_compiler_search_path
-    cflags = ''
-
     # Load default include folders
-    cflags << "-I#{$project_rootdir}/usr/include"
-    cflags << "-I#{$project_rootdir}/usr/local/include"
+    cflags = ''
+    cflags << "-I#{$project_rootdir}/usr/include "
+    cflags << "-I#{$project_rootdir}/usr/local/include "
 
     # Load default lib folders
-    cflags << "-L#{$project_rootdir}/lib"
-    cflags << "-L#{$project_rootdir}/usr/lib"
-    cflags << "-L#{$project_rootdir}/usr/local/lib"
+    ldflags = ''
+    ldflags << "-L#{$project_rootdir}/lib "
+    ldflags << "-L#{$project_rootdir}/usr/lib "
+    ldflags << "-L#{$project_rootdir}/usr/local/lib "
 
     # Load the user configured CFLAGS
     cflags << $bsyscfg.get_cflags
 
-    # Replay it to bsys configuration
+    # Load the user configured LDFLAGS
+    ldflags << $bsyscfg.get_ldflags
+
+    # Replay configurations to bsys
     $bsyscfg.set_cflags cflags
+    $bsyscfg.set_ldflags ldflags
   end
 
   def set_project_rootdir rootdir
