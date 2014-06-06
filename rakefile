@@ -2,22 +2,30 @@ require_relative 'bsys/core.rb'
 
 desc "Generate documentation about bsys"
 task :doc do
+  sysprint "Generating bsys documentation"
+
   system('rdoc bsys/')
 end
 
 desc "Clean root directory"
 task :rootclean do
+  sysprint "Cleaning root directory"
+
   FileUtils::rm_rf(ROOTDIR, :secure => true)
 end
 
 desc "Generate an all no package project file"
 task :all_no do
+  sysprint "Generating all packages disabled project file"
+
   all_no_packages
 end
 
 desc "Generate an all yes package project file"
 task :all_yes do
-  all_no_packages
+  sysprint "Generating all packages enabled project file"
+
+  all_yes_packages
 end
 
 desc "Meta-task to clean all selected packages (see your project file)"
