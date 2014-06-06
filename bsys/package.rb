@@ -333,7 +333,10 @@ class Package
         FileUtils::cd(@objdir)
       end
 
-      sysexec(@install[:bsys_install])
+      unless sysexec(@install[:bsys_install])
+        syserr "Failed to install package"
+        raise
+      end
 
       FileUtils::cd(BSYS_ROOTDIR)
 
