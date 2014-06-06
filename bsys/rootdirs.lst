@@ -1,9 +1,14 @@
 /bin
+/lib
 /sbin
 /usr/bin
+/usr/lib
 /usr/sbin
+/usr/include
 /usr/local/bin
+/usr/local/lib
 /usr/local/sbin
+/usr/local/include
 /usr/share/man/man1
 /usr/share/man/man2
 /usr/share/man/man3
