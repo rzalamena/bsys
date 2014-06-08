@@ -556,9 +556,9 @@ INSTALL
       @configure_flags.is_a? String
     raise "build must be a string" unless
       @build.is_a? String
-    raise "export must be an array" unless
+    raise "export must be an hash" unless
       @export.is_a? Hash
-    raise "install must be an array" unless
+    raise "install must be an hash" unless
       @install.is_a? Hash
     raise "install_cmd must be a string" unless
       @install_cmd.is_a? String
