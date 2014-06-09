@@ -470,9 +470,12 @@ CONFIGURE
   end
 
   # Returns the default package build instructions
-  def pkg_default_build(jobnum, make)
+  def pkg_default_build
+    jobnum = @jobs
+    make = @make
+
     # If job number specification is missing, use default
-    if jobnum == 0
+    if jobnum <= 0
       jobnum = $bsyscfg.get_jobs
     end
     if make.length == 0
@@ -492,7 +495,11 @@ BUILD
   end
 
   # Returns the default package installation instructions
-  def pkg_default_install(bsdstyle=false, make)
+  def pkg_default_install
+    bsdstyle = @bsdstyle
+    make = @make
+    sudo_cmd = ''
+
     if bsdstyle == true
       sudo_cmd = 'sudo'
     end
@@ -653,18 +660,18 @@ INSTALL
 
     if @autobuild == true
       if defined? @build
-        @build << pkg_default_build(@jobs, @make)
+        @build << pkg_default_build
       else
-        @build = pkg_default_build(@jobs, @make)
+        @build = pkg_default_build
       end
     end
 
     if @autoinstall == true
       if @install_cmd.length > 0
         @install[:bsys_install] = @install_cmd
-        @install[:bsys_install] << pkg_default_install(@bsdstyle, @make)
+        @install[:bsys_install] << pkg_default_install
       else
-        @install[:bsys_install] = pkg_default_install(@bsdstyle, @make)
+        @install[:bsys_install] = pkg_default_install
       end
     end
 
