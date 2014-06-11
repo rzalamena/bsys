@@ -13,7 +13,7 @@ require_relative 'util'
 # * The package name
 # * Optionally the package version
 #
-# Example of package recipe filename: pkg/libevent-2.0.22-stable.yml
+# Example of package recipe filename: pkg/libevent-${PKGVER}.yml
 #
 # == Definitions
 #
@@ -526,6 +526,7 @@ INSTALL
     @configure = replace_vars(@configure)
     @configure_flags = replace_vars(@configure_flags)
     @build = replace_vars(@build)
+    @fetch_url = replace_vars(@fetch_url)
 
     new_hash = Hash.new
     @export.each_pair do |src, dst|

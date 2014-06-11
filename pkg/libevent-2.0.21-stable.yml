@@ -1,1 +1,1 @@
-source: 'https://github.com/downloads/libevent/libevent/libevent-2.0.21-stable.tar.gz'
+source: 'https://github.com/downloads/libevent/libevent/libevent-${PKGVER}.tar.gz'
