@@ -196,8 +196,8 @@ class Package
 
         # Generate package build dependencies
         @clean_deps.each do |dep|
-          task.enhance(["#{dep}_build".to_sym])
-          metatask.enhance(["#{dep}_build".to_sym]) if has_metaname
+          task.enhance(["#{dep}_install".to_sym])
+          metatask.enhance(["#{dep}_install".to_sym]) if has_metaname
         end
       when /export/i
         task.enhance(["#{@name}_configure".to_sym])
